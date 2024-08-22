@@ -1,71 +1,133 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block title %}Cine Aster{% endblock %}
 
 {% block content %}
 <style>
   .carousel-container {
-    width: 80%;
-    max-width: 800px;
+    width: 95%;
+    max-width: 1200px;
     margin: auto;
+    padding: 20px 0;
   }
-
-  .carousel-inner img {
-    width: 100%;
-    height: auto;
-  }
-
-  .carousel-item {
+  .carousel-inner {
     display: flex;
-    flex-direction: column;
-    align-items: center;
+  }
+  .carousel-item {
+    display: block;
+    margin-right: 10px;
+    flex: 0 0 auto;
+    width: calc(20% - 10px);
+  }
+  .media-box {
+    position: relative;
+    overflow: hidden;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+  }
+  .media-box:hover {
+    transform: scale(1.05);
+  }
+  .media-thumb {
+    width: 100%;
+    aspect-ratio: 2/3;
+    object-fit: cover;
+  }
+  .media-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: white;
+  }
+  .media-badge {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    background-color: rgba(0,0,0,0.6);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.8rem;
+  }
+  .media-box-title {
+    font-size: 1rem;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .carousel-control-prev, .carousel-control-next {
+    width: 5%;
+    background-color: rgba(0,0,0,0.5);
   }
 </style>
 
-<!-- Carrusel -->
-<div id="movieCarousel" class="carousel-container carousel slide" data-bs-ride="carousel">
+<div id="movieCarousel" class="carousel slide carousel-container" data-bs-ride="carousel">
   <div class="carousel-inner">
     {% for pelicula in peliculas %}
     <div class="carousel-item {% if forloop.first %}active{% endif %}">
       <div class="media-box" data-movie-id="{{ pelicula.id }}">
-        <a href="" class="full-click"></a>
-        <div class="media-thumb" style="background-image: url('{{ pelicula.Portada.url }}');"></div>
-        <!-- Start media-play -->
-        <a href="" class="media-play">
-          <i class="icofont-ui-play"></i>
-        </a>
-        <!-- Start rate-quality-info -->
-        <div class="rate-quality-info">
-          <span class="media-badge bg-dark">HD</span>
-          <span class="rate icofont-star">Rating</span>
-        </div>
+        <img src="{{ pelicula.Portada.url }}" class="media-thumb" alt="{{ pelicula.Titulo }}">
+        <span class="media-badge">HD</span>
         <div class="media-info">
-          <a href="" class="media-box-category">
-            <i class="icofont-video-alt"></i>
-            {% for genero in pelicula.Genero.all %}
-              {{ genero }}
-              {% if not forloop.last %}, {% endif %}
-            {% endfor %}
-          </a>
           <h5 class="media-box-title">{{ pelicula.Titulo }}</h5>
         </div>
       </div>
     </div>
     {% endfor %}
   </div>
-  <!-- Controles del carrusel -->
-  <a class="carousel-control-prev" href="#movieCarousel" role="button" data-bs-slide="prev">
+  <button class="carousel-control-prev" type="button" data-bs-target="#movieCarousel" data-bs-slide="prev">
     <span class="carousel-control-prev-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Previous</span>
-  </a>
-  <a class="carousel-control-next" href="#movieCarousel" role="button" data-bs-slide="next">
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#movieCarousel" data-bs-slide="next">
     <span class="carousel-control-next-icon" aria-hidden="true"></span>
     <span class="visually-hidden">Next</span>
-  </a>
+  </button>
 </div>
 
-<!-- Incluye los scripts de Bootstrap para el carrusel si es necesario -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var carousel = new bootstrap.Carousel(document.getElementById('movieCarousel'), {
+    interval: false,
+    wrap: false
+  });
+
+  // Mostrar 5 items a la vez
+  var carouselInner = document.querySelector('.carousel-inner');
+  var items = carouselInner.querySelectorAll('.carousel-item');
+  items.forEach(function(item, index) {
+    if (index < 5) {
+      item.classList.add('active');
+    }
+  });
+
+  // Deslizar de 5 en 5
+  document.querySelector('.carousel-control-next').addEventListener('click', function() {
+    carousel.next();
+    updateActiveItems(5);
+  });
+
+  document.querySelector('.carousel-control-prev').addEventListener('click', function() {
+    carousel.prev();
+    updateActiveItems(-5);
+  });
+
+  function updateActiveItems(direction) {
+    var activeItems = carouselInner.querySelectorAll('.carousel-item.active');
+    var firstActiveIndex = Array.from(items).indexOf(activeItems[0]);
+    activeItems.forEach(item => item.classList.remove('active'));
+    for (var i = 0; i < 5; i++) {
+      var index = (firstActiveIndex + direction + i + items.length) % items.length;
+      items[index].classList.add('active');
+    }
+  }
+});
+</script>
 {% endblock %}
