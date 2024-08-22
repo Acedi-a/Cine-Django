@@ -30,6 +30,8 @@ class Pelicula(models.Model):
     Clasificacion = models.ForeignKey(Clasificacion, on_delete=models.CASCADE)
     Duracion = models.IntegerField()
     Genero = models.ManyToManyField(Genero)
+    Portada = models.ImageField(upload_to='images/')
+    Trailer = models.CharField(max_length=200)
     def __str__(self):
         return f"Titulo: {self.Titulo}"
 
