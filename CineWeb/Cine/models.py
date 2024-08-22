@@ -18,14 +18,20 @@ class Genero(models.Model):
     def __str__(self):
         return self.Nombre
     
+class Clasificacion(models.Model):
+    IdGenero = models.AutoField(primary_key=True)
+    Clase = models.CharField(max_length=100)
+    def __str__(self):
+        return self.Clase
+
 class Pelicula(models.Model):
-    Nombre = models.CharField(max_length=100)
+    Titulo = models.CharField(max_length=100)
     Lanzamiento = models.DateField()
-    Clasificacion = models.CharField(max_length=100)
+    Clasificacion = models.ForeignKey(Clasificacion, on_delete=models.CASCADE)
     Duracion = models.IntegerField()
     Genero = models.ManyToManyField(Genero)
     def __str__(self):
-        return self.Nombre
+        return f"Titulo: {self.Titulo}"
 
 class Sala(models.Model):
     IdSala = models.AutoField(primary_key=True)
