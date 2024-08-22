@@ -39,7 +39,7 @@ class Sala(models.Model):
     Formato = models.BooleanField(default=False)
     Estado = models.BooleanField(default=True)
     def __str__(self):
-        return self.IdSala
+        return self.Nombre
 
 class Funcion(models.Model):
     IdFuncion = models.AutoField(primary_key=True)
@@ -48,7 +48,7 @@ class Funcion(models.Model):
     Horario = models.DateTimeField()
     Precio = models.PositiveIntegerField()
     def __str__(self):
-        return self.IdFuncion
+        return f"Función {self.IdFuncion}"
     
 class Asiento(models.Model):
     IdAsiento = models.AutoField(primary_key=True)
