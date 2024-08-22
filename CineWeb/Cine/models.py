@@ -64,6 +64,7 @@ class Asiento(models.Model):
     IdSala = models.ForeignKey(Sala, on_delete=models.CASCADE)
     Numero = models.PositiveIntegerField()
     Fila = models.CharField(max_length=3)
+    Estado = models.BooleanField(default=True)
     def __str__(self):
         return f"{self.IdAsiento}"
 
