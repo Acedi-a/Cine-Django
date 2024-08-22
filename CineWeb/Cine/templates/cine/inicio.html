@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Cine Aster{% endblock %}
+
+{% block content %}
+<style>
+  .carousel-container {
+    width: 80%;
+    max-width: 800px;
+    margin: auto;
+  }
+
+  .carousel-inner img {
+    width: 100%;
+    height: auto;
+  }
+</style>
+
+<div class="col mt-3">
+      <div class="media-box" data-movie-id = "${pelicula.id}">
+          <a href="single-movie.html" class="full-click"></a>
+          <div class="media-thumb"
+              style="background-image: url(${pelicula.img});">
+          </div>
+          <!-- Start media-play -->
+          <a href="single-movie.html" class="media-play">
+              <i class="icofont-ui-play"></i>
+          </a>
+          <!-- Start rate-quality-info -->
+          <div class="rate-quality-info">
+              <span class="media-badge bg-dark">HD</span>
+              <span class="rate icofont-star">8.9</span>
+          </div>
+          <div class="media-info">
+              <a href="movies.html" class="media-box-category">
+                  <i class="icofont-video-alt"></i>
+                  ${pelicula.genero}
+              </a>
+              <h5 class="media-box-title">${pelicula.titulo}</h5>
+          </div>
+      </div>
+</div>
+{% endblock %}
