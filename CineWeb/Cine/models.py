@@ -35,10 +35,17 @@ class Pelicula(models.Model):
     def __str__(self):
         return f"Titulo: {self.Titulo}"
 
+class Formato(models.Model):
+    IdFormato = models.AutoField(primary_key=True)
+    Tipo = models.CharField(max_length=40)
+    def __str__(self):
+        return self.Tipo
+    
+
 class Sala(models.Model):
     IdSala = models.AutoField(primary_key=True)
     Nombre = models.CharField(max_length=100)
-    Formato = models.BooleanField(default=False)
+    Formato = models.ForeignKey(Formato, on_delete=models.CASCADE)
     Estado = models.BooleanField(default=True)
     def __str__(self):
         return self.Nombre
@@ -58,14 +65,19 @@ class Asiento(models.Model):
     Numero = models.PositiveIntegerField()
     Fila = models.CharField(max_length=3)
     def __str__(self):
-        return self.IdAsiento, self.Fila
+        return f"{self.IdAsiento}"
 
 class Reserva(models.Model):
     IdReserva = models.AutoField(primary_key=True)
     IdAsiento = models.ForeignKey(Asiento, on_delete= models.CASCADE)
     IdUsuario = models.ForeignKey(Usuario, on_delete= models.CASCADE)
+    IdFuncion = models.ForeignKey(Funcion, on_delete= models.CASCADE)
+    FechaReserva = models.DateTimeField(auto_now_add=True)
+    class Meta:
+        unique_together = ('IdFuncion', 'IdAsiento')  # Asegura que un asiento no pueda ser reservado dos veces para la misma función
+        
     def __str__(self): 
-        return self.IdReserva
+        return f"self.IdReserva"
 
 
     

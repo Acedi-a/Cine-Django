@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Pelicula, Genero, Sala, Funcion, Clasificacion
+from .models import Pelicula, Genero, Sala, Funcion, Clasificacion, Asiento, Formato
 
 # Register your models here.
 
@@ -19,6 +19,9 @@ class PeliculaAdmin(admin.ModelAdmin):
     generos_list.short_description = "Generos"
 class GeneroAdmin(admin.ModelAdmin):
     list_display = ('Genero',)
+    
+class FormatoAdmin(admin.ModelAdmin):
+    list_display = ('Tipo',)
 
 class SalaAdmin(admin.ModelAdmin):
     list_display = ('Nombre','Formato')
@@ -37,8 +40,23 @@ class FuncionAdmin(admin.ModelAdmin):
         return obj.IdSala.Nombre
     get_sala_nombre.short_description = 'Sala'
 
+class AsientoAdmin(admin.ModelAdmin):
+    list_display = ('formato_posicion', 'get_sala_nombre','Fila','Numero')
+    
+    def get_sala_nombre(self, obj):
+        return obj.IdSala.Nombre
+    get_sala_nombre.short_description = 'Sala'
+    
+    def formato_posicion(self,obj):
+        fila = obj.Fila
+        numero = obj.Numero
+        return f"{fila}{numero}"
+    formato_posicion.short_description = "Posicion"
+
 admin.site.register(Pelicula, PeliculaAdmin)
 admin.site.register(Genero, GeneroAdmin)
 admin.site.register(Sala, SalaAdmin)
 admin.site.register(Funcion, FuncionAdmin)
 admin.site.register(Clasificacion, ClasificacionAdmin)
+admin.site.register(Asiento, AsientoAdmin)
+admin.site.register(Formato, FormatoAdmin)
