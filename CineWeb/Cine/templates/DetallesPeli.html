@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aster - Wonka</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #2c2640;
+            color: #e6e0ff;
+        }
+        .header {
+            background: linear-gradient(to right, #8e44ad, #9b59b6);
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .nav {
+            background-color: #1e1a2e;
+            padding: 10px 20px;
+        }
+        .nav a {
+            color: #b39ddb;
+            text-decoration: none;
+            margin-right: 10px;
+        }
+        .nav a:last-child {
+            color: #d1c4e9;
+        }
+        .content {
+            display: flex;
+            padding: 20px;
+        }
+        .movie-poster {
+            flex: 0 0 300px;
+            margin-right: 20px;
+        }
+        .movie-poster img {
+            width: 100%;
+            border-radius: 10px;
+        }
+        .movie-info {
+            flex: 1;
+        }
+        .movie-title {
+            font-size: 36px;
+            margin-bottom: 10px;
+        }
+        .movie-meta {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .meta-item {
+            background-color: #3c3157;
+            padding: 5px 10px;
+            margin-right: 10px;
+            border-radius: 5px;
+        }
+        .meta-item.yellow {
+            color: #ffd700;
+        }
+        .reserve-btn {
+            background-color: #9c27b0;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .movie-description {
+            margin-bottom: 20px;
+        }
+        .movie-details {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .detail-item {
+            display: flex;
+            align-items: center;
+        }
+        .detail-label {
+            margin-right: 10px;
+            color: #b39ddb;
+        }
+        .detail-value {
+            background-color: #3c3157;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        .trailer-btn {
+            background-color: #673ab7;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">ES CINE🚬</div>
+        <div>
+            <span>🔍</span>
+            <span>👤</span>
+        </div>
+    </div>
+    <div class="nav">
+        <a href="#">Inicio</a> &gt;
+        <a href="#">Peliculas</a> &gt;
+        <a href="#">Wonka</a>
+    </div>
+    <div class="content">
+        <div class="movie-poster">
+            <img src="https://es.web.img3.acsta.net/pictures/23/11/14/17/56/0356452.jpg" alt="Wonka poster">
+        </div>
+        <div class="movie-info">
+            <h1 class="movie-title">Wonka</h1>
+            <div class="movie-meta">
+                <span class="meta-item yellow">★ 7.8</span>
+                <span class="meta-item">IMDB 167</span>
+                <span class="meta-item">⏱ 1h 40min</span>
+                <span class="meta-item">👍 34</span>
+                <span class="meta-item">📅 2020</span>
+                <button class="reserve-btn">RESERVAR</button>
+            </div>
+            <p class="movie-description">
+                La historia se centra en el joven Willy Wonka y en cómo conoció a los Oompa-Loompas en una de sus primeras aventuras.
+            </p>
+            <div class="movie-details">
+                <div class="detail-item">
+                    <span class="detail-label">Calidad</span>
+                    <span class="detail-value">HD</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Idioma</span>
+                    <span class="detail-value">Español</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Ciudad</span>
+                    <span class="detail-value">Tarija</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Categoria</span>
+                    <span class="detail-value">Pelicula</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Genero</span>
+                    <span class="detail-value">Comedia</span>
+                </div>
+            </div>
+            <button class="trailer-btn">▶ Watch trailer</button>
+        </div>
+    </div>
+</body>
+</html>
