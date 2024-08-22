@@ -14,9 +14,9 @@ class Usuario(models.Model):
     
 class Genero(models.Model):
     IdGenero = models.AutoField(primary_key=True)
-    Nombre = models.CharField(max_length=100)
+    Genero = models.CharField(max_length=100)
     def __str__(self):
-        return self.Nombre
+        return self.Genero
     
 class Clasificacion(models.Model):
     IdGenero = models.AutoField(primary_key=True)
