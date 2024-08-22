@@ -26,6 +26,7 @@ class Clasificacion(models.Model):
 
 class Pelicula(models.Model):
     Titulo = models.CharField(max_length=100)
+    Descripcion = models.TextField(default="Pelicula")
     Lanzamiento = models.DateField()
     Clasificacion = models.ForeignKey(Clasificacion, on_delete=models.CASCADE)
     Duracion = models.IntegerField()
