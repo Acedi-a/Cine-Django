@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Pelicula, Genero, Sala, Funcion
+from .models import Pelicula, Genero, Sala, Funcion, Clasificacion
 
 # Register your models here.
 
@@ -15,13 +15,16 @@ class PeliculaAdmin(admin.ModelAdmin):
     formato_duracion.short_description = "Duracion"
     
     def generos_list(self, obj):
-        return ", ".join(Genero.Nombre for Genero in obj.Genero.all()) 
+        return ", ".join(Genero.Genero for Genero in obj.Genero.all()) 
     generos_list.short_description = "Generos"
 class GeneroAdmin(admin.ModelAdmin):
     list_display = ('Genero',)
 
 class SalaAdmin(admin.ModelAdmin):
     list_display = ('Nombre','Formato')
+
+class ClasificacionAdmin(admin.ModelAdmin):
+    list_display = ('Clase'),
     
 class FuncionAdmin(admin.ModelAdmin):
     list_display = ('IdFuncion', 'get_pelicula_titulo', 'get_sala_nombre', 'Horario', 'Precio')
@@ -38,3 +41,4 @@ admin.site.register(Pelicula, PeliculaAdmin)
 admin.site.register(Genero, GeneroAdmin)
 admin.site.register(Sala, SalaAdmin)
 admin.site.register(Funcion, FuncionAdmin)
+admin.site.register(Clasificacion, ClasificacionAdmin)
