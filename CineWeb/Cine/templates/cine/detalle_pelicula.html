@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5 py-5">
+    <div class="row">
+        <div class="col-md-4">
+            <img src="{{ pelicula.Portada.url }}" alt="{{ pelicula.Titulo }}" class="img-fluid rounded">
+        </div>
+        <div class="col-md-8">
+            <h1 class="mb-3">{{ pelicula.Titulo }}</h1>
+            <p class="lead">{{ pelicula.Descripcion }}</p>
+            <p><strong>Lanzamiento:</strong> {{ pelicula.Lanzamiento }}</p>
+            <p><strong>Clasificación:</strong> {{ pelicula.Clasificacion }}</p>
+            <p><strong>Duración:</strong> {{ pelicula.Duracion }} minutos</p>
+            <p><strong>Géneros:</strong> 
+                {% for genero in pelicula.Genero.all %}
+                    {{ genero }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+            </p>
+            <a href="{{ pelicula.Trailer }}" class="btn btn-primary" target="_blank">Ver Trailer</a>
+        </div>
+    </div>
+
+    <h2 class="mt-5 mb-4">Funciones</h2>
+    {% for fecha, funciones in funciones_por_fecha.items %}
+        <h3 class="mb-3">{{ fecha|date:"l d F Y" }}</h3>
+        <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
+            {% for funcion in funciones %}
+                <div class="col">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">{{ funcion.Horario|time:"H:i" }}</h5>
+                            <p class="card-text">Sala: {{ funcion.IdSala.Nombre }}</p>
+                            <p class="card-text">Formato: {{ funcion.IdSala.Formato }}</p>
+                            <p class="card-text">Precio: Bs. {{ funcion.Precio }}</p>
+                            <a href="#" class="btn btn-success">Reservar</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% empty %}
+        <p>No hay funciones programadas para esta película.</p>
+    {% endfor %}
+</div>
+{% endblock %}

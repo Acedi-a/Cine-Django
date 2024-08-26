@@ -76,7 +76,7 @@ class Reserva(models.Model):
     IdFuncion = models.ForeignKey(Funcion, on_delete= models.CASCADE)
     FechaReserva = models.DateTimeField(auto_now_add=True)
     class Meta:
-        unique_together = ('IdFuncion', 'IdAsiento')  # Asegura que un asiento no pueda ser reservado dos veces para la misma función
+        unique_together = ('IdFuncion', 'IdAsiento')
         
     def __str__(self): 
         return f"self.IdReserva"

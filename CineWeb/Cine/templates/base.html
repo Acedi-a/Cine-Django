@@ -2,69 +2,128 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
-
-    <title>Aster</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <title>Cine Aster</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0d1117 0%, #2a2a72 100%);
+            color: #ffffff;
+            min-height: 100vh;
+        }
+        .navbar {
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #ffd700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        .nav-link {
+            color: #ffffff;
+            transition: color 0.3s ease;
+        }
+        .nav-link:hover {
+            color: #ffd700;
+        }
+        .navbar-toggler {
+            border: none;
+        }
+        .navbar-toggler:focus {
+            box-shadow: none;
+        }
+        .film-strip {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23000000'/%3E%3Crect x='10' y='10' width='80' height='80' fill='%23ffffff'/%3E%3Crect x='20' y='20' width='60' height='60' fill='%23000000'/%3E%3C/svg%3E");
+            background-repeat: repeat-x;
+            opacity: 0.1;
+            animation: filmStrip 20s linear infinite;
+        }
+        @keyframes filmStrip {
+            from { background-position: 0 0; }
+            to { background-position: 100% 0; }
+        }
+        .main-content {
+            position: relative;
+            z-index: 1;
+        }
+        .spotlight {
+            position: fixed;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 70%);
+            animation: spotlight 10s infinite alternate;
+            pointer-events: none;
+        }
+        @keyframes spotlight {
+            0% { transform: translate(-25%, -25%) rotate(0deg); }
+            100% { transform: translate(25%, 25%) rotate(360deg); }
+        }
+    </style>
 </head>
-<body style="height: 100vh; background-image: linear-gradient(78deg,#ae48e4,#362a93);">
-<header>
-    <nav class="navbar navbar-expand-lg">
-      <div class="container d-flex justify-content-between align-items-center">
-        <a class="navbar-brand" href="#">
-          <i class="fa-solid fa-play text-white"></i>
-        </a>
+<body>
+    <div class="film-strip"></div>
+    <div class="spotlight"></div>
+    <header>
+        <nav class="navbar navbar-expand-lg fixed-top">
+            <div class="container">
+                <a class="navbar-brand" href="{% url 'iniciov2'%}">
+                    <i class="fa-solid fa-film me-2"></i>Cine Aster
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <i class="fa-solid fa-bars text-white"></i>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'iniciov2'%}"><i class="fa-solid fa-home me-2"></i>Inicio</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="#"><i class="fa-solid fa-ticket me-2"></i>Reservas</a>
+                        </li>
+                        {% if user.is_authenticated %}
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa-solid fa-user me-2"></i>{{ user.username }}
+                                </a>
+                                <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                    <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user-cog me-2"></i>Perfil</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fa-solid fa-sign-out-alt me-2"></i>Cerrar sesión</a></li>
+                                </ul>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'login' %}"><i class="fa-solid fa-sign-in-alt me-2"></i>Iniciar sesión</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
 
-        <!-- Buttons Group aligned to the right -->
-        <div class="d-flex align-items-center ">
-          <span data-bs-toggle="modal" data-bs-target="#login-modal" style="margin-right: 1rem">
-            <a class="nav-link" data-bs-toggle="tooltip" title="Login / Register" href="javascript:void(0)">
-              <i class="fa-solid fa-user text-white"></i>
-            </a>
-          </span>
-
-          <a class="nav-link" data-bs-toggle="tooltip" title="Search" href="movies.html">
-            <i class="fa-solid fa-magnifying-glass text-white"></i>
-          </a>
-
-          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mynavbar">
-            <i class="fa-solid fa-bars text-white"></i>
-          </button>
-        </div>
-      </div>
-    </nav>
-  </header>
-<div class="collapse navbar-collapse" id="mynavbar">
-    <ul class="navbar-nav">
-      <li class="nav-item">
-        <a class="search-btn-header" data-bs-toggle="tooltip" title="Search" href="movies.html">
-          <i class="icofont-search text-white"></i>
-        </a>
-      </li>
-      <li class="nav-item">
-        <span data-bs-toggle="modal" data-bs-target="#login-modal">
-          <a class="auth-btn" data-bs-toggle="tooltip" title="Login / Register" href="javascript:void(0)">
-            <i class="icofont-ui-user text-white"></i>
-          </a>
-        </span>
-      </li>
-    </ul>
-  </div>
-<!-- Contenido principal -->
-
-    <main class="container my-5">
+    <main class="container my-5 main-content ">
         {% block content %}
-        <!-- Aquí se insertará el contenido específico de cada página -->
         {% endblock %}
     </main>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </body>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </html>

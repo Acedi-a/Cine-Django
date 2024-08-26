@@ -1,0 +1,281 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid px-0">
+    <div class="jumbotron bg-dark text-white text-center py-5 mb-4">
+        <h1 class="display-4 glow-text"> Bienvenido al cine Aester</h1>
+        <p class="lead">Descubre la magia del cine en nuestra pantalla grande</p>
+    </div>
+
+    <!-- Sección de películas destacadas -->
+    <div class="container mb-5">
+        <h2 class="text-center mb-4 section-title">Películas Destacadas</h2>
+        <div class="row">
+            {% for pelicula in peliculas_destacadas %}
+                <div class="col-md-4 mb-4">
+                    <div class="movie-card">
+                        <div class="movie-header">
+                            <img src="{{ pelicula.Portada.url }}" alt="{{ pelicula.Titulo }}" class="movie-image">
+                            <div class="header-icon-container">
+                                <a href="#">
+                                    <i class="fas fa-play"></i>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="movie-content">
+                            <div class="movie-content-header">
+                                <h3 class="movie-title">{{ pelicula.Titulo }}</h3>
+                            </div>
+                            <div class="movie-info">
+                                <div class="info-section">
+                                    <label>Lanzamiento</label>
+                                    <span>{{ pelicula.Lanzamiento|date:"d M Y" }}</span>
+                                </div>
+                                <div class="info-section">
+                                    <label>Duración</label>
+                                    <span>{{ pelicula.Duracion }} min</span>
+                                </div>
+                                <div class="info-section">
+                                    <label>Clasificación</label>
+                                    <span>{{ pelicula.Clasificacion }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Grid de todas las películas -->
+    <div class="container">
+        <h2 class="text-center mb-4 section-title">Todas las Películas</h2>
+        <div class="row row-cols-2 row-cols-md-3 row-cols-lg-4 row-cols-xl-5 g-4">
+            {% for pelicula in todas_peliculas %}
+                <div class="col">
+                    <div class="movie-poster">
+                        <img src="{{ pelicula.Portada.url }}" alt="{{ pelicula.Titulo }}" class="img-fluid">
+                        <div class="movie-poster-overlay">
+                            <h5>{{ pelicula.Titulo }}</h5>
+                            <p>{{ pelicula.Descripcion|truncatechars:100 }}</p>
+                            <a href="{% url 'detalle_pelicula' pelicula.id %}" class="btn btn-outline-light btn-sm">Ver más</a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #0a0a0a;
+        color: #ffffff;
+    }
+
+    .jumbotron {
+        background: linear-gradient(45deg, #1a1a1a, #2a2a2a);
+    }
+
+    .glow-text {
+        color: #ffd700;
+        font-family: 'Poppins', sans-serif;
+        text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700, 0 0 30px #ffd700;
+        animation: glow 1.5s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+        from {
+            text-shadow: 0 0 5px #ffd700, 0 0 10px #ffd700, 0 0 15px #ffd700;
+        }
+        to {
+            text-shadow: 0 0 10px #ffd700, 0 0 20px #ffd700, 0 0 30px #ffd700;
+        }
+    }
+
+    .section-title {
+            font-family: 'Poppins', sans-serif;
+        color: #ffd700;
+        text-shadow: 0 0 5px #ffd700;
+        margin-bottom: 30px;
+        position: relative;
+    }
+
+    .section-title::after {
+        content: '';
+        display: block;
+        width: 100px;
+        height: 2px;
+        background-color: #ffd700;
+        margin: 10px auto 0;
+    }
+
+    .movie-card {
+        background: #1a1a1a;
+        box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 315px;
+        margin: 0 auto;
+        border-radius: 10px;
+        display: inline-block;
+        transition: transform 0.3s ease;
+    }
+
+    .movie-card:hover {
+        transform: scale(1.05);
+    }
+
+    .movie-header {
+        padding: 0;
+        margin: 0;
+        height: 367px;
+        width: 100%;
+        display: block;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .movie-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .movie-card:hover .movie-image {
+        transform: scale(1.1);
+    }
+
+    .header-icon-container {
+        position: absolute;
+        bottom: 10px;
+        right: 10px;
+    }
+
+    .header-icon-container a {
+        color: #ffffff;
+        font-size: 30px;
+        text-decoration: none;
+        background-color: rgba(0, 0, 0, 0.6);
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color 0.3s ease;
+    }
+
+    .header-icon-container a:hover {
+        background-color: rgba(255, 215, 0, 0.6);
+    }
+
+    .movie-content {
+        padding: 18px 18px 24px 18px;
+        margin: 0;
+    }
+
+    .movie-content-header, .movie-info {
+        display: table;
+        width: 100%;
+    }
+
+    .movie-title {
+        font-size: 24px;
+        margin: 0;
+        display: table-cell;
+        color: #ffd700;
+    }
+
+    .movie-info {
+        margin-top: 1em;
+    }
+
+    .info-section {
+        display: table-cell;
+        text-transform: uppercase;
+        text-align: center;
+    }
+
+    .info-section:first-of-type {
+        text-align: left;
+    }
+
+    .info-section:last-of-type {
+        text-align: right;
+    }
+
+    .info-section label {
+        display: block;
+        color: rgba(255, 255, 255, 0.5);
+        margin-bottom: .5em;
+        font-size: 9px;
+    }
+
+    .info-section span {
+        font-weight: 700;
+        font-size: 11px;
+        color: #ffffff;
+    }
+
+    .movie-poster {
+        position: relative;
+        overflow: hidden;
+        border-radius: 8px;
+        height: 400px;
+    }
+
+    .movie-poster img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+    }
+
+    .movie-poster:hover img {
+        transform: scale(1.1);
+    }
+
+    .movie-poster-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 20px;
+    }
+
+    .movie-poster:hover .movie-poster-overlay {
+        opacity: 1;
+    }
+
+    .movie-poster-overlay h5 {
+        color: #ffd700;
+        margin-bottom: 10px;
+    }
+
+    .btn-outline-light {
+        border-color: #ffd700;
+        color: #ffd700;
+    }
+
+    .btn-outline-light:hover {
+        background-color: #ffd700;
+        color: #0a0a0a;
+    }
+</style>
+{% endblock %}
