@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4">Selección de Asientos</h1>
+    <h2>{{ funcion.IdPelicula.Titulo }} - {{ funcion.Horario|date:"d/m/Y H:i" }}</h2>
+    <p>Sala: {{ funcion.IdSala.Nombre }}</p>
+    
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="screen mb-4 text-center p-2 bg-secondary text-white">Pantalla</div>
+            <div id="asientos" class="d-flex flex-wrap justify-content-center">
+                {% for asiento in asientos %}
+                    <div class="m-1">
+                        <button class="btn btn-sm {% if asiento.IdAsiento in asientos_reservados %}btn-danger disabled{% else %}btn-outline-primary{% endif %}"
+                                data-asiento-id="{{ asiento.IdAsiento }}"
+                                onclick="toggleAsiento(this)">
+                            {{ asiento.Fila }}{{ asiento.Numero }}
+                        </button>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Resumen de la Reserva</h5>
+                    <p>Asientos seleccionados: <span id="asientos-seleccionados"></span></p>
+                    <p>Total: Bs. <span id="total">0</span></p>
+                    <button class="btn btn-success" onclick="reservar()">Reservar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+let asientosSeleccionados = [];
+const precioAsiento = {{ funcion.Precio }};
+
+function toggleAsiento(button) {
+    const asientoId = button.getAttribute('data-asiento-id');
+    const index = asientosSeleccionados.indexOf(asientoId);
+    
+    if (index > -1) {
+        asientosSeleccionados.splice(index, 1);
+        button.classList.remove('btn-primary');
+        button.classList.add('btn-outline-primary');
+    } else {
+        asientosSeleccionados.push(asientoId);
+        button.classList.remove('btn-outline-primary');
+        button.classList.add('btn-primary');
+    }
+    
+    actualizarResumen();
+}
+
+function actualizarResumen() {
+    document.getElementById('asientos-seleccionados').textContent = asientosSeleccionados.join(', ');
+    document.getElementById('total').textContent = (asientosSeleccionados.length * precioAsiento).toFixed(2);
+}
+
+function reservar() {
+    fetch('{% url "reservar_asientos" %}', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: JSON.stringify({
+            funcion_id: {{ funcion.IdFuncion }},
+            asientos_ids: asientosSeleccionados
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'success') {
+            alert('Reserva realizada con éxito');
+            // Aquí podrías redirigir a una página de confirmación
+        } else {
+            alert('Error al realizar la reserva');
+        }
+    });
+}
+</script>
+{% endblock %}

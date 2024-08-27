@@ -93,9 +93,12 @@
                             <a class="nav-link" href="{% url 'iniciov2'%}"><i class="fa-solid fa-home me-2"></i>Inicio</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="#"><i class="fa-solid fa-ticket me-2"></i>Reservas</a>
+                            <a class="nav-link" href="{% url 'registro_usuario' %}">Registro</a>
                         </li>
                         {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="#"><i class="fa-solid fa-ticket me-2"></i>Reservas</a>
+                            </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fa-solid fa-user me-2"></i>{{ user.username }}

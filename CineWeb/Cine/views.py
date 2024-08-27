@@ -1,10 +1,15 @@
+import json
+
 from django.contrib.auth import authenticate, logout, login
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.contrib import messages
+from django.views.decorators.http import require_POST
+from .forms import RegistroUsuarioForm
 
 
-from .models import Pelicula, Funcion  # Ajusta esto según tu modelo
+from .models import Pelicula, Funcion, Asiento, Reserva  # Ajusta esto según tu modelo
 
 def inicio(request):
     # Ordenar por fecha de creación en orden descendente y obtener los últimos 10 registros
@@ -57,3 +62,40 @@ def login_view(request):
 def logout_view(request):
     logout(request)
     return redirect('iniciov2')
+
+
+def registro_usuario(request):
+    if request.method == 'POST':
+        form = RegistroUsuarioForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            messages.success(request, 'Usuario registrado exitosamente.')
+            return redirect('iniciov2')  # Asume que tienes una vista 'home'
+    else:
+        form = RegistroUsuarioForm()
+    return render(request, r'cine/registro.html', {'form': form})
+
+def seleccion_asientos(request, funcion_id):
+    funcion = get_object_or_404(Funcion, pk=funcion_id)
+    asientos = Asiento.objects.filter(IdSala=funcion.IdSala)
+    reservas = Reserva.objects.filter(IdFuncion=funcion)
+    asientos_reservados = [reserva.IdAsiento.IdAsiento for reserva in reservas]
+
+    context = {
+        'funcion': funcion,
+        'asientos': asientos,
+        'asientos_reservados': asientos_reservados,
+    }
+    return render(request, r'cine/seleccionar_asientos.html', context)
+
+
+@require_POST
+def reservar_asientos(request):
+    data = json.loads(request.body)
+    funcion_id = data.get('funcion_id')
+    asientos_ids = data.get('asientos_ids')
+
+    funcion = get_object_or_404(Funcion, pk=funcion_id)
+    asientos = Asiento.objects.filter(pk__in=asientos_ids)
+
+    return JsonResponse({'status': 'success', 'message': 'Asientos reservados correctamente'})

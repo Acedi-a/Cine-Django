@@ -33,7 +33,7 @@
                             <p class="card-text">Sala: {{ funcion.IdSala.Nombre }}</p>
                             <p class="card-text">Formato: {{ funcion.IdSala.Formato }}</p>
                             <p class="card-text">Precio: Bs. {{ funcion.Precio }}</p>
-                            <a href="#" class="btn btn-success">Reservar</a>
+                            <a href="{% url 'seleccion_asientos' funcion.IdFuncion %}" class="btn btn-success">Reservar</a>
                         </div>
                     </div>
                 </div>

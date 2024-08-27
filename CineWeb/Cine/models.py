@@ -10,7 +10,7 @@ class Usuario(models.Model):
     FechaRegistro= models.DateField()
     Estado = models.BooleanField(default=True)
     def __str__(self):
-        return self.Nombre, self.CI, self.Rol
+        return f"{self.Nombre} {self.Apellido} (CI: {self.CI})"
     
 class Genero(models.Model):
     IdGenero = models.AutoField(primary_key=True)
