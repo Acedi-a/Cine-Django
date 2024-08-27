@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 
 # Create your models here.
 
@@ -72,7 +74,7 @@ class Asiento(models.Model):
 class Reserva(models.Model):
     IdReserva = models.AutoField(primary_key=True)
     IdAsiento = models.ForeignKey(Asiento, on_delete= models.CASCADE)
-    IdUsuario = models.ForeignKey(Usuario, on_delete= models.CASCADE)
+    IdUsuario = models.ForeignKey(User, on_delete= models.CASCADE)
     IdFuncion = models.ForeignKey(Funcion, on_delete= models.CASCADE)
     FechaReserva = models.DateTimeField(auto_now_add=True)
     class Meta:

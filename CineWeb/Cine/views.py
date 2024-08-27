@@ -86,6 +86,7 @@ def seleccion_asientos(request, funcion_id):
         'asientos': asientos,
         'asientos_reservados': asientos_reservados,
     }
+    print(context['asientos'])
     return render(request, r'cine/seleccionar_asientos.html', context)
 
 

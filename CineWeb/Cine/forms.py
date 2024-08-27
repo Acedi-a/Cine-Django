@@ -2,14 +2,16 @@ from django import forms
 from .models import Usuario
 from django.core.exceptions import ValidationError
 from django.utils import timezone
+from django.contrib.auth.models import User
+
 
 class RegistroUsuarioForm(forms.ModelForm):
     password = forms.CharField(widget=forms.PasswordInput())
     confirmar_password = forms.CharField(widget=forms.PasswordInput())
 
     class Meta:
-        model = Usuario
-        fields = ['Nombre', 'Apellido', 'CI', 'password']
+        model = User
+        fields = ['username', 'email','first_name','last_name', 'password', 'confirmar_password']
 
     def clean(self):
         cleaned_data = super().clean()
