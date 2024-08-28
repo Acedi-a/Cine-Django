@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-tqmhi792i@ayjh=w4ia7&y91w*e4e4f#eve@b#)i*a+($(ufa&
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['172.30.20.248']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -54,6 +54,8 @@ MIDDLEWARE = [
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+LOGIN_URL = 'login'
+
 
 ROOT_URLCONF = 'CineWeb.urls'
 

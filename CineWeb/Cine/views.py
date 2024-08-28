@@ -1,15 +1,15 @@
 import json
 
 from django.contrib.auth import authenticate, logout, login
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.contrib import messages
 from django.views.decorators.http import require_POST
 from .forms import RegistroUsuarioForm
-
-
-from .models import Pelicula, Funcion, Asiento, Reserva  # Ajusta esto según tu modelo
+from django.contrib.auth.models import Group
+from .models import Pelicula, Funcion, Asiento, Reserva
 
 def inicio(request):
     # Ordenar por fecha de creación en orden descendente y obtener los últimos 10 registros
@@ -69,12 +69,15 @@ def registro_usuario(request):
         form = RegistroUsuarioForm(request.POST)
         if form.is_valid():
             user = form.save()
+            grupo, _ = Group.objects.get_or_create(name='Usuarios')
+            user.groups.add(grupo)
             messages.success(request, 'Usuario registrado exitosamente.')
-            return redirect('iniciov2')  # Asume que tienes una vista 'home'
+            return redirect('iniciov2')
     else:
         form = RegistroUsuarioForm()
     return render(request, r'cine/registro.html', {'form': form})
 
+@login_required
 def seleccion_asientos(request, funcion_id):
     funcion = get_object_or_404(Funcion, pk=funcion_id)
     asientos = Asiento.objects.filter(IdSala=funcion.IdSala)
