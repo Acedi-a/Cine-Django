@@ -1,6 +1,6 @@
 import json
 
-from django.contrib.auth import authenticate, logout, login
+from django.contrib.auth import authenticate, logout, login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
@@ -10,6 +10,10 @@ from django.views.decorators.http import require_POST
 from .forms import RegistroUsuarioForm
 from django.contrib.auth.models import Group
 from .models import Pelicula, Funcion, Asiento, Reserva
+from django.contrib.auth.forms import PasswordChangeForm
+from .forms import UserProfileForm
+
+
 
 def inicio(request):
     # Ordenar por fecha de creación en orden descendente y obtener los últimos 10 registros
@@ -103,3 +107,20 @@ def reservar_asientos(request):
     asientos = Asiento.objects.filter(pk__in=asientos_ids)
 
     return JsonResponse({'status': 'success', 'message': 'Asientos reservados correctamente'})
+
+@login_required
+def editar_perfil(request):
+    if request.method == 'POST':
+        form = UserProfileForm(request.POST, instance=request.user)
+        if form.is_valid():
+            user = form.save(commit=False)
+            password = form.cleaned_data.get('password')
+            if password:
+                user.set_password(password)
+            user.save()
+            update_session_auth_hash(request, user)
+            messages.success(request, 'Tu perfil ha sido actualizado exitosamente.')
+            return redirect('editar_perfil')
+    else:
+        form = UserProfileForm(instance=request.user)
+    return render(request, r'cine/editar_perfil.html', {'form': form})
