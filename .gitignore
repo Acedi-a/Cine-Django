@@ -1,1 +1,7 @@
-entornoX\
+entornoX/
+*.log
+venv/
+env/
+*.env
+__pycache__/
+*.pyc
