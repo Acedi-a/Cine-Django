@@ -10,7 +10,6 @@ from django.views.decorators.http import require_POST
 from .forms import RegistroUsuarioForm
 from django.contrib.auth.models import Group
 from .models import Pelicula, Funcion, Asiento, Reserva
-from django.contrib.auth.forms import PasswordChangeForm
 from .forms import UserProfileForm
 
 
@@ -118,9 +117,9 @@ def editar_perfil(request):
             if password:
                 user.set_password(password)
             user.save()
-            update_session_auth_hash(request, user)
-            messages.success(request, 'Tu perfil ha sido actualizado exitosamente.')
-            return redirect('editar_perfil')
+            update_session_auth_hash(request, user)  # Mantiene la sesión del usuario
+            messages.success(request, 'Tu perfil ha sido actualizado correctamente.')
+            return redirect('logout')
     else:
         form = UserProfileForm(instance=request.user)
     return render(request, r'cine/editar_perfil.html', {'form': form})

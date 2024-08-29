@@ -51,10 +51,11 @@ class RegistroUsuarioForm(forms.ModelForm):
     def save(self, commit=True):
         user = super().save(commit=False)
         user.FechaRegistro = timezone.now()
+        password = self.cleaned_data.get("password")
+        user.set_password(password)  # Establece la contraseña utilizando el método set_password
         if commit:
             user.save()
         return user
-
 
     def verificar_caracteres(self, campo):
         special_chars = set('!@#$%^&*()-_=+[]{}|;:\",.<>?/`~1234567890')
@@ -65,10 +66,9 @@ class RegistroUsuarioForm(forms.ModelForm):
         return True
 
 
-
 class UserProfileForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput(), required=False)
-    confirmar_password = forms.CharField(widget=forms.PasswordInput(), required=False)
+    password = forms.CharField(widget=forms.PasswordInput(), required=True)
+    confirmar_password = forms.CharField(widget=forms.PasswordInput(), required=True)
 
     class Meta:
         model = User
@@ -78,8 +78,18 @@ class UserProfileForm(forms.ModelForm):
         cleaned_data = super().clean()
         password = cleaned_data.get("password")
         confirmar_password = cleaned_data.get("confirmar_password")
+        print("pass: " + str(password))
+        print("confirm: " + str(confirmar_password))
 
-        if password and password != confirmar_password:
-            raise ValidationError("Las contraseñas no coinciden")
-
+        if password != confirmar_password and (password == "" or confirmar_password == ""):
+            raise ValidationError("Las contraseñas estan incorrectas")
         return cleaned_data
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        print("mail: " + str(email))
+
+        if email != self.instance.email:  # Si el email ha cambiado
+            if User.objects.filter(email=email).exists():
+                raise ValidationError("Este email ya fue registrado por otro usuario")
+        return email
