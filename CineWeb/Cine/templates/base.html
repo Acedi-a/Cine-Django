@@ -101,7 +101,7 @@
                                     <i class="fa-solid fa-user me-2"></i>{{ user.username }}
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                    <li><a class="dropdown-item" href="#"><i class="fa-solid fa-user-cog me-2"></i>Perfil</a></li>
+                                    <li><a class="dropdown-item" href="{% url 'editar_perfil' %}"><i class="fa-solid fa-user-cog me-2"></i>Perfil</a></li>
                                     <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" href="{% url 'logout' %}"><i class="fa-solid fa-sign-out-alt me-2"></i>Cerrar sesión</a></li>
                                 </ul>

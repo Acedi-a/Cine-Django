@@ -64,3 +64,22 @@ class RegistroUsuarioForm(forms.ModelForm):
                 return False
         return True
 
+
+
+class UserProfileForm(forms.ModelForm):
+    password = forms.CharField(widget=forms.PasswordInput(), required=False)
+    confirmar_password = forms.CharField(widget=forms.PasswordInput(), required=False)
+
+    class Meta:
+        model = User
+        fields = ['email', 'first_name', 'last_name', 'password']
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        confirmar_password = cleaned_data.get("confirmar_password")
+
+        if password and password != confirmar_password:
+            raise ValidationError("Las contraseñas no coinciden")
+
+        return cleaned_data

@@ -9,5 +9,6 @@ urlpatterns = [
     path('funcion/<int:funcion_id>/seleccion-asientos/', views.seleccion_asientos, name='seleccion_asientos'),
     path('reservar-asientos/', views.reservar_asientos, name='reservar_asientos'),
     path('registro/', views.registro_usuario, name='registro_usuario'),
+    path('editar-perfil/', views.editar_perfil, name='editar_perfil'),
 
 ]
