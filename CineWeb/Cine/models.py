@@ -34,7 +34,7 @@ class Pelicula(models.Model):
     Duracion = models.IntegerField()
     Genero = models.ManyToManyField(Genero)
     Portada = models.ImageField(upload_to='cine/media/')
-    Trailer = models.CharField(max_length=200)
+    Trailer = models.CharField(max_length=400)
     def __str__(self):
         return f"Titulo: {self.Titulo}"
 
@@ -71,17 +71,20 @@ class Asiento(models.Model):
     def __str__(self):
         return f"{self.IdAsiento}"
 
+
 class Reserva(models.Model):
     IdReserva = models.AutoField(primary_key=True)
-    IdAsiento = models.ForeignKey(Asiento, on_delete= models.CASCADE)
-    IdUsuario = models.ForeignKey(User, on_delete= models.CASCADE)
-    IdFuncion = models.ForeignKey(Funcion, on_delete= models.CASCADE)
+    IdUsuario = models.ForeignKey(User, on_delete=models.CASCADE)
+    IdFuncion = models.ForeignKey(Funcion, on_delete=models.CASCADE)
+    Asientos = models.ManyToManyField(Asiento)
     FechaReserva = models.DateTimeField(auto_now_add=True)
-    class Meta:
-        unique_together = ('IdFuncion', 'IdAsiento')
-        
-    def __str__(self): 
-        return f"self.IdReserva"
+
+    def __str__(self):
+        return f"Reserva {self.IdReserva} - {self.IdUsuario.username}"
+
+    @staticmethod
+    def asientos_reservados(funcion_id):
+        return Asiento.objects.filter(reserva__IdFuncion_id=funcion_id).values_list('pk', flat=True)
 
 
     

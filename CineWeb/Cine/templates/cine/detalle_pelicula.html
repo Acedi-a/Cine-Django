@@ -17,7 +17,7 @@
                     {{ genero }}{% if not forloop.last %}, {% endif %}
                 {% endfor %}
             </p>
-            <a href="{{ pelicula.Trailer }}" class="btn btn-primary" target="_blank">Ver Trailer</a>
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/{{ pelicula.Trailer }}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
         </div>
     </div>
 
@@ -26,9 +26,9 @@
         <h3 class="mb-3">{{ fecha|date:"l d F Y" }}</h3>
         <div class="row row-cols-1 row-cols-md-3 g-4 mb-4">
             {% for funcion in funciones %}
-                <div class="col">
-                    <div class="card">
-                        <div class="card-body">
+                <div class="col" >
+                    <div class="card" style="background-color: rgba(0,0,10,0.5); backdrop-filter: blur(10px) ">
+                        <div class="card-body text-white">
                             <h5 class="card-title">{{ funcion.Horario|time:"H:i" }}</h5>
                             <p class="card-text">Sala: {{ funcion.IdSala.Nombre }}</p>
                             <p class="card-text">Formato: {{ funcion.IdSala.Formato }}</p>

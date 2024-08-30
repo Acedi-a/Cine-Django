@@ -37,11 +37,16 @@
 <script>
 let asientosSeleccionados = [];
 const precioAsiento = {{ funcion.Precio }};
+const asientosReservados = {{ asientos_reservados|safe }};
 
 function toggleAsiento(button) {
-    const asientoId = button.getAttribute('data-asiento-id');
+    const asientoId = parseInt(button.getAttribute('data-asiento-id'));
+    if (asientosReservados.includes(asientoId)) {
+        return;
+    }
+
     const index = asientosSeleccionados.indexOf(asientoId);
-    
+
     if (index > -1) {
         asientosSeleccionados.splice(index, 1);
         button.classList.remove('btn-primary');
@@ -51,7 +56,7 @@ function toggleAsiento(button) {
         button.classList.remove('btn-outline-primary');
         button.classList.add('btn-primary');
     }
-    
+
     actualizarResumen();
 }
 
@@ -75,11 +80,24 @@ function reservar() {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            alert('Reserva realizada con éxito');
-            // Aquí podrías redirigir a una página de confirmación
+            alert(data.message);
+            // Actualizar la UI para mostrar los asientos como reservados
+            asientosSeleccionados.forEach(asientoId => {
+                const button = document.querySelector(`button[data-asiento-id="${asientoId}"]`);
+                button.classList.remove('btn-primary', 'btn-outline-primary');
+                button.classList.add('btn-danger', 'disabled');
+                asientosReservados.push(asientoId);
+            });
+            // Limpiar la selección
+            asientosSeleccionados = [];
+            actualizarResumen();
         } else {
-            alert('Error al realizar la reserva');
+            alert(data.message || 'Error al realizar la reserva');
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error al procesar la reserva');
     });
 }
 </script>

@@ -2,9 +2,14 @@
 
 {% block content %}
 <div class="container-fluid px-0">
-    <div class="jumbotron bg-dark text-white text-center py-5 mb-4">
-        <h1 class="display-4 glow-text"> Bienvenido al cine Aester</h1>
-        <p class="lead">Descubre la magia del cine en nuestra pantalla grande</p>
+    <div class="banner">
+        <div class="lights">
+            <!-- Se generarán 20 luces dinámicamente con JavaScript -->
+        </div>
+        <div class="content">
+            <h1 class="main-title">Cine Aester</h1>
+            <p class="subtitle">Bienvenido, disfruta tus peliculas favoritas como nunca antes</p>
+        </div>
     </div>
 
     <!-- Sección de películas destacadas -->
@@ -16,11 +21,6 @@
                     <div class="movie-card">
                         <div class="movie-header">
                             <img src="{{ pelicula.Portada.url }}" alt="{{ pelicula.Titulo }}" class="movie-image">
-                            <div class="header-icon-container">
-                                <a href="#">
-                                    <i class="fas fa-play"></i>
-                                </a>
-                            </div>
                         </div>
                         <div class="movie-content">
                             <div class="movie-content-header">
@@ -66,6 +66,60 @@
         </div>
     </div>
 </div>
+
+<style>
+        .banner {
+            font-family: "Alice", serif;
+            position: relative;
+            width: 100%;
+            height: 300px;
+            overflow: hidden;
+            background-color: rgba(0,0,0,0.5);
+            backdrop-filter: blur(10px);
+            margin-bottom: 20px;
+            border-radius: 20px;
+        }
+        .lights {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-around;
+            padding: 10px;
+        }
+        .light {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background-color: #FFD700;
+            animation: lightUp 2s infinite;
+            opacity: 0;
+        }
+        @keyframes lightUp {
+            0%, 100% { opacity: 0; }
+            50% { opacity: 1; }
+        }
+        .content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            color: #FFD700;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .main-title {
+            font-size: 5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+        .subtitle {
+            font-size: 1.5rem;
+        }
+    </style>
+
 
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&display=swap');
@@ -125,7 +179,7 @@
     }
 
     .movie-card:hover {
-        transform: scale(1.05);
+        transform: scale(1.2);
     }
 
     .movie-header {
@@ -278,4 +332,16 @@
         color: #0a0a0a;
     }
 </style>
+
+    <script>
+        const lightsContainer = document.querySelector('.lights');
+        const numberOfLights = 20;
+
+        for (let i = 0; i < numberOfLights; i++) {
+            const light = document.createElement('div');
+            light.classList.add('light');
+            light.style.animationDelay = `${i * 0.1}s`;
+            lightsContainer.appendChild(light);
+        }
+    </script>
 {% endblock %}

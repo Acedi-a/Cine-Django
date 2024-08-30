@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">Mis Reservas</h1>
+
+    {% if reservas %}
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            {% for reserva in reservas %}
+                <div class="col">
+                    <div class="card h-100 shadow" style="background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px);">
+                        <div class="card-body" style="color: white">
+                            <h5 class="card-title">{{ reserva.IdFuncion.IdPelicula.Titulo }}</h5>
+                            <div class="card-image mb-3">
+                                <img src="{{ reserva.IdFuncion.IdPelicula.Portada.url }}" class="img-fluid rounded" alt="{{ reserva.IdFuncion.IdPelicula.Titulo }}">
+                            </div>
+                            <h6 class="card-subtitle mb-2">{{ reserva.IdFuncion.Horario|date:"d/m/Y H:i" }}</h6>
+                            <p class="card-text">
+                                <strong>Sala:</strong> {{ reserva.IdFuncion.IdSala.Nombre }}<br>
+                                <strong>Asientos:</strong>
+                                {% for asiento in reserva.Asientos.all %}
+                                    {{ asiento.Fila }}{{ asiento.Numero }}{% if not forloop.last %}, {% endif %}
+                                {% endfor %}
+                            </p>
+                            <p class="card-text"><small>Reservado el {{ reserva.FechaReserva|date:"d/m/Y H:i" }}</small></p>
+                        </div>
+
+                        <div class="card-footer">
+{#                            <a href="#" class="btn btn-primary btn-sm">Ver Detalles</a>#}
+{#                            <a href="#" class="btn btn-danger btn-sm float-end">Cancelar Reserva</a>#}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info" role="alert">
+            No tienes reservas activas. ¿Por qué no reservas una película?
+        </div>
+    {% endif %}
+</div>
+
+<style>
+    .card {
+        transition: transform 0.3s;
+    }
+    .card:hover {
+        transform: translateY(-5px);
+    }
+</style>
+{% endblock %}

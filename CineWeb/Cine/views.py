@@ -2,10 +2,12 @@ import json
 
 from django.contrib.auth import authenticate, logout, login, update_session_auth_hash
 from django.contrib.auth.decorators import login_required
+from django.db import transaction
 from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.contrib import messages
+from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 from .forms import RegistroUsuarioForm
 from django.contrib.auth.models import Group
@@ -34,6 +36,7 @@ def iniciov2(request):
 
 def detalle_pelicula(request, pelicula_id):
     pelicula = get_object_or_404(Pelicula, pk=pelicula_id)
+    print(pelicula.Trailer)
     funciones = Funcion.objects.filter(IdPelicula=pelicula, Horario__gte=timezone.now()).order_by('Horario')
 
     # Agrupar funciones por fecha
@@ -82,30 +85,56 @@ def registro_usuario(request):
 
 @login_required
 def seleccion_asientos(request, funcion_id):
-    funcion = get_object_or_404(Funcion, pk=funcion_id)
+    funcion = Funcion.objects.get(IdFuncion=funcion_id)
     asientos = Asiento.objects.filter(IdSala=funcion.IdSala)
-    reservas = Reserva.objects.filter(IdFuncion=funcion)
-    asientos_reservados = [reserva.IdAsiento.IdAsiento for reserva in reservas]
+    asientos_reservados = Reserva.asientos_reservados(funcion_id).values_list('pk', flat=True)
 
     context = {
         'funcion': funcion,
         'asientos': asientos,
-        'asientos_reservados': asientos_reservados,
+        'asientos_reservados': list(asientos_reservados)
     }
-    print(context['asientos'])
-    return render(request, r'cine/seleccionar_asientos.html', context)
+    return render(request, 'cine/seleccionar_asientos.html', context)
 
 
+
+@login_required
+@csrf_exempt
 @require_POST
 def reservar_asientos(request):
     data = json.loads(request.body)
     funcion_id = data.get('funcion_id')
     asientos_ids = data.get('asientos_ids')
 
-    funcion = get_object_or_404(Funcion, pk=funcion_id)
-    asientos = Asiento.objects.filter(pk__in=asientos_ids)
+    try:
+        funcion = Funcion.objects.get(IdFuncion=funcion_id)
 
-    return JsonResponse({'status': 'success', 'message': 'Asientos reservados correctamente'})
+        with transaction.atomic():
+            # Verificar si algún asiento ya está reservado
+            asientos_reservados = Reserva.asientos_reservados(funcion_id)
+            for asiento_id in asientos_ids:
+                if asientos_reservados.filter(IdAsiento=asiento_id).exists():
+                    raise ValueError(f"El asiento {asiento_id} ya está reservado.")
+
+            # Crear la reserva
+            reserva = Reserva.objects.create(
+                IdUsuario=request.user,
+                IdFuncion=funcion
+            )
+            asientos = Asiento.objects.filter(IdAsiento__in=asientos_ids)
+            reserva.Asientos.add(*asientos)
+
+        return JsonResponse({'status': 'success', 'message': 'Reserva realizada con éxito'})
+
+    except Funcion.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'La función no existe'}, status=404)
+    except Asiento.DoesNotExist:
+        return JsonResponse({'status': 'error', 'message': 'Uno o más asientos no existen'}, status=404)
+    except ValueError as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': 'Error al realizar la reserva'}, status=500)
+
 
 @login_required
 def editar_perfil(request):
@@ -123,3 +152,11 @@ def editar_perfil(request):
     else:
         form = UserProfileForm(instance=request.user)
     return render(request, r'cine/editar_perfil.html', {'form': form})
+
+
+def reservas_usuario(request):
+    reservas = Reserva.objects.filter(IdUsuario=request.user).order_by('-FechaReserva')
+    context = {
+        'reservas': reservas
+    }
+    return render(request, r'cine/reservas_usuario.html', context)

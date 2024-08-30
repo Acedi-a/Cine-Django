@@ -68,22 +68,21 @@ class AsientoAdmin(admin.ModelAdmin):
 
 
 class ReservaAdmin(admin.ModelAdmin):
-    list_display = ('IdReserva', 'get_usuario_nombre', 'get_funcion', 'get_asiento')
+    list_display = ('IdReserva', 'get_usuario_nombre', 'get_funcion_info', 'get_asientos_info', 'FechaReserva')
+    list_filter = ('IdFuncion__IdPelicula__Titulo', 'FechaReserva')
+    search_fields = ('IdUsuario__username', 'IdFuncion__IdPelicula__Titulo')
 
     def get_usuario_nombre(self, obj):
-        return obj.usuario.Nombre
-
+        return obj.IdUsuario.username
     get_usuario_nombre.short_description = 'Usuario'
 
-    def get_funcion(self, obj):
-        return obj.funcion.IdFuncion
+    def get_funcion_info(self, obj):
+        return f"{obj.IdFuncion.IdPelicula.Titulo} - {obj.IdFuncion.Horario}"
+    get_funcion_info.short_description = 'Función'
 
-    get_funcion.short_description = 'Función'
-
-    def get_asiento(self, obj):
-        return obj.asiento.formato_posicion()
-
-    get_asiento.short_description = 'Asiento'
+    def get_asientos_info(self, obj):
+        return ", ".join([f"{asiento.Fila}{asiento.Numero}" for asiento in obj.Asientos.all()])
+    get_asientos_info.short_description = 'Asientos'
 
 
 admin.site.register(Pelicula, PeliculaAdmin)
