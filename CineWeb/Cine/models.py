@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+
 # Create your models here.
 
 class Usuario(models.Model):
@@ -78,6 +79,7 @@ class Reserva(models.Model):
     IdFuncion = models.ForeignKey(Funcion, on_delete=models.CASCADE)
     Asientos = models.ManyToManyField(Asiento)
     FechaReserva = models.DateTimeField(auto_now_add=True)
+    ReservaQR = models.ImageField(upload_to='cine/media/reservaQR/')
 
     def __str__(self):
         return f"Reserva {self.IdReserva} - {self.IdUsuario.username}"

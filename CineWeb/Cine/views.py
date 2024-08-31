@@ -8,11 +8,16 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
 from django.contrib import messages
 from django.views.decorators.csrf import csrf_exempt
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_http_methods
 from .forms import RegistroUsuarioForm
 from django.contrib.auth.models import Group
 from .models import Pelicula, Funcion, Asiento, Reserva
 from .forms import UserProfileForm
+import qrcode
+from io import BytesIO
+from django.core.files import File
+import google.generativeai as genai
+
 
 
 
@@ -124,6 +129,28 @@ def reservar_asientos(request):
             asientos = Asiento.objects.filter(IdAsiento__in=asientos_ids)
             reserva.Asientos.add(*asientos)
 
+            # Generar el código QR
+            qr_data = f"Reserva ID: {reserva.IdReserva}, Usuario: {request.user.username}"
+            qr = qrcode.QRCode(
+                version=1,
+                error_correction=qrcode.constants.ERROR_CORRECT_L,
+                box_size=10,
+                border=4,
+            )
+            qr.add_data(qr_data)
+            qr.make(fit=True)
+
+            img = qr.make_image(fill='black', back_color='white')
+
+            # Guardar la imagen del código QR
+            buffer = BytesIO()
+            img.save(buffer, format="PNG")
+            buffer.seek(0)
+
+            filename = f'reserva_{reserva.IdReserva}.png'
+            reserva.ReservaQR.save(filename, File(buffer), save=False)
+            reserva.save()
+
         return JsonResponse({'status': 'success', 'message': 'Reserva realizada con éxito'})
 
     except Funcion.DoesNotExist:
@@ -146,7 +173,7 @@ def editar_perfil(request):
             if password:
                 user.set_password(password)
             user.save()
-            update_session_auth_hash(request, user)  # Mantiene la sesión del usuario
+            update_session_auth_hash(request, user)
             messages.success(request, 'Tu perfil ha sido actualizado correctamente.')
             return redirect('logout')
     else:
@@ -160,3 +187,32 @@ def reservas_usuario(request):
         'reservas': reservas
     }
     return render(request, r'cine/reservas_usuario.html', context)
+
+
+genai.configure(api_key='AIzaSyC0IqS_GFpapID1tOhZsdqZtVai4BJGyS8')
+
+
+
+@require_http_methods(["GET", "POST"])
+def chat_ia(request):
+    if request.method == 'POST':
+        user_message = request.POST.get('message', '')
+
+        model = genai.GenerativeModel("gemini-1.5-flash")
+
+        personalidad = """
+        Eres una IA experta en cine para ayudar a los clientes de Cine Aester, tu nombre es CinIa y tu mision es ayudarles a elegir una pelicula
+        o darles recomendaciones segun sus necesidades, no te desvies del tema principal que es el cine y demas, ten una personalidad agradable y 
+        tambien da respuestas no tan largas sino concisas con tu humor si es necesario, no es necesario que te presentes cada vez, solo si te lo preguntan 
+        y cocentrate a responder la pregunta que te hacen
+        
+        """
+
+        # Combina las instrucciones del sistema con el mensaje del usuario
+        full_prompt = f"{personalidad}\n\nUsuario: {user_message}\nCineBot:"
+
+        response = model.generate_content(full_prompt)
+
+        return JsonResponse({'bot_response': response.text})
+
+    return render(request, 'cine/chatia.html')

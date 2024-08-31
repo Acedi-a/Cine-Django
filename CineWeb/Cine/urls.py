@@ -11,5 +11,6 @@ urlpatterns = [
     path('registro/', views.registro_usuario, name='registro_usuario'),
     path('editar-perfil/', views.editar_perfil, name='editar_perfil'),
     path('reservas_usuario/', views.reservas_usuario, name='reservas_usuario'),
+    path('chatia/', views.chat_ia, name='chatia'),
 
 ]

@@ -80,25 +80,45 @@ function reservar() {
     .then(response => response.json())
     .then(data => {
         if (data.status === 'success') {
-            alert(data.message);
-            // Actualizar la UI para mostrar los asientos como reservados
-            asientosSeleccionados.forEach(asientoId => {
-                const button = document.querySelector(`button[data-asiento-id="${asientoId}"]`);
-                button.classList.remove('btn-primary', 'btn-outline-primary');
-                button.classList.add('btn-danger', 'disabled');
-                asientosReservados.push(asientoId);
+            Swal.fire({
+                icon: 'success',
+                title: '¡Éxito!',
+                text: data.message,
+                confirmButtonText: 'OK',
+                background: 'rgba(20,0,50,0.8)',
+                color: 'white'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Actualizar la UI para mostrar los asientos como reservados
+                    asientosSeleccionados.forEach(asientoId => {
+                        const button = document.querySelector(`button[data-asiento-id="${asientoId}"]`);
+                        button.classList.remove('btn-primary', 'btn-outline-primary');
+                        button.classList.add('btn-danger', 'disabled');
+                        asientosReservados.push(asientoId);
+                    });
+                    // Limpiar la selección
+                    asientosSeleccionados = [];
+                    actualizarResumen();
+                }
             });
-            // Limpiar la selección
-            asientosSeleccionados = [];
-            actualizarResumen();
         } else {
-            alert(data.message || 'Error al realizar la reserva');
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: data.message || 'Error al realizar la reserva'
+            });
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error al procesar la reserva');
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Error al procesar la reserva'
+        });
     });
 }
 </script>
+
+
 {% endblock %}

@@ -6,7 +6,7 @@
     <h1 class="mb-4 text-center">Mis Reservas</h1>
 
     {% if reservas %}
-        <div class="row row-cols-1 row-cols-md-3 g-4">
+        <div class="row row-cols-1 row-cols-md-4 g-3">
             {% for reserva in reservas %}
                 <div class="col">
                     <div class="card h-100 shadow" style="background-color: rgba(0, 0, 0, 0.5); backdrop-filter: blur(10px);">
@@ -23,10 +23,20 @@
                                     {{ asiento.Fila }}{{ asiento.Numero }}{% if not forloop.last %}, {% endif %}
                                 {% endfor %}
                             </p>
+{#                            <p>QR de reserva</p>#}
+{#                            <div class="card-image mb-3">#}
+{#                                <img class="img-fluid rounded" src="{{ reserva.ReservaQR.url }}" alt="{{ reserva.ReservaQR.url  }}">#}
+{#                            </div>#}
                             <p class="card-text"><small>Reservado el {{ reserva.FechaReserva|date:"d/m/Y H:i" }}</small></p>
                         </div>
 
                         <div class="card-footer">
+                            <button type="button" class="btn btn-primary" onclick="showQrModal('{{ reserva.ReservaQR.url }}')">
+                              Entrada QR
+                            </button>
+
+
+
 {#                            <a href="#" class="btn btn-primary btn-sm">Ver Detalles</a>#}
 {#                            <a href="#" class="btn btn-danger btn-sm float-end">Cancelar Reserva</a>#}
                         </div>
@@ -40,6 +50,23 @@
         </div>
     {% endif %}
 </div>
+
+<script>
+    function showQrModal(imageUrl) {
+        Swal.fire({
+            title: 'Código QR',
+            imageUrl: imageUrl,
+            imageWidth: 400,
+            imageHeight: 400,
+            imageAlt: 'Código QR de la reserva',
+            confirmButtonText: 'Cerrar',
+            background: 'rgba(0,0,0,0.7)',
+            showCloseButton: true,
+            color: 'white'
+        });
+    }
+</script>
+
 
 <style>
     .card {
