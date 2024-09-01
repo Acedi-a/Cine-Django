@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from django.db import models
 from django.contrib.auth.models import User
 
@@ -62,6 +64,9 @@ class Funcion(models.Model):
     Precio = models.PositiveIntegerField()
     def __str__(self):
         return f"Función {self.IdFuncion}"
+
+    def hora_salida(self):
+        return self.Horario + timedelta(minutes=self.IdPelicula.Duracion)
     
 class Asiento(models.Model):
     IdAsiento = models.AutoField(primary_key=True)
